@@ -1,0 +1,717 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="utf-8">
+<title>Project Store — MD Tahsin Islam</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="description" content="Personal launcher for all my published projects.">
+<meta name="author" content="MD Tahsin Islam">
+<meta name="theme-color" content="#eceef2" id="themeColor">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Projects">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" type="image/png" href="icons/favicon.png">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700&family=Sora:wght@500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg1:#f4f5f8; --bg2:#e6e8ee; --ink:#0e0e12; --ink2:#55585f; --ink3:#8b8f99;
+  --glass:rgba(255,255,255,.62); --glass2:rgba(255,255,255,.82); --glass-b:rgba(255,255,255,.85);
+  --line:rgba(14,14,18,.08); --shadow:0 18px 50px -18px rgba(40,44,70,.28), 0 2px 6px rgba(40,44,70,.05);
+  --dark:#0f0f14; --dark2:#1a1a22; --on-dark:#f4f4f7; --on-dark2:#a3a6b2;
+  --g1:#b9a7ff; --g2:#ffc2a8; --g3:#a8f0d6;
+  --radius:28px; --font-d:'Sora',system-ui,-apple-system,'Segoe UI',sans-serif; --font-b:'Manrope',system-ui,-apple-system,'Segoe UI',sans-serif;
+  color-scheme:light;
+}
+[data-theme="dark"]{
+  --bg1:#101116; --bg2:#0a0a0e; --ink:#f3f3f7; --ink2:#b0b3be; --ink3:#767a86;
+  --glass:rgba(40,42,54,.5); --glass2:rgba(52,54,70,.62); --glass-b:rgba(255,255,255,.1);
+  --line:rgba(255,255,255,.09); --shadow:0 18px 50px -18px rgba(0,0,0,.7);
+  --dark:#050508; --dark2:#14141b; color-scheme:dark;
+}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+html,body{height:100%}
+body{font-family:var(--font-b);color:var(--ink);background:linear-gradient(160deg,var(--bg1),var(--bg2));overflow-x:hidden;font-size:14px;line-height:1.45}
+button,input,select{font:inherit;color:inherit}
+button{cursor:pointer;border:0;background:none}
+:focus-visible{outline:2px solid var(--ink);outline-offset:2px}
+svg.i{width:18px;height:18px;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;flex:none}
+
+/* backdrop: soft stones + gradient light */
+.bg{position:fixed;inset:0;z-index:0;overflow:hidden;pointer-events:none}
+.bg i{position:absolute;border-radius:50%;filter:blur(60px);opacity:.75}
+.bg .a{width:46vmax;height:46vmax;left:-12vmax;top:-14vmax;background:radial-gradient(circle,var(--g1),transparent 65%);opacity:.5}
+.bg .b{width:40vmax;height:40vmax;right:-10vmax;top:8vmax;background:radial-gradient(circle,var(--g2),transparent 65%);opacity:.45}
+.bg .c{width:42vmax;height:42vmax;left:30vw;bottom:-22vmax;background:radial-gradient(circle,var(--g3),transparent 65%);opacity:.45}
+[data-theme="dark"] .bg i{opacity:.28}
+.bg .stone{filter:none;opacity:1;background:radial-gradient(circle at 35% 30%,#fff,#dfe1e7 60%,#cfd2da);box-shadow:0 30px 60px -20px rgba(30,34,60,.25)}
+.bg .s1{width:200px;height:130px;border-radius:50% 50% 12% 12%;left:5vw;top:-10px}
+.bg .s2{width:150px;height:150px;right:6vw;bottom:70px;border-radius:50%;background:radial-gradient(circle at 40% 35%,#fff 0 38%,#e3e5ea 40% 62%,#fff 64%)}
+[data-theme="dark"] .bg .stone{display:none}
+
+/* shell */
+.shell{position:relative;z-index:1;max-width:1360px;margin:0 auto;min-height:100%;padding:max(18px,env(safe-area-inset-top)) 18px max(18px,env(safe-area-inset-bottom));display:grid;grid-template-columns:230px 1fr;gap:16px}
+.glass{background:var(--glass);backdrop-filter:blur(26px) saturate(1.5);-webkit-backdrop-filter:blur(26px) saturate(1.5);border:1px solid var(--glass-b);box-shadow:var(--shadow)}
+.side{border-radius:30px;padding:16px 12px;display:flex;flex-direction:column;position:sticky;top:18px;height:calc(100vh - 36px);max-height:900px}
+.brand{display:flex;align-items:center;gap:10px;padding:6px 10px 18px;font-family:var(--font-d);font-weight:700;font-size:15px}
+.brand img{width:34px;height:34px;border-radius:10px;box-shadow:0 6px 16px -6px rgba(60,40,120,.6)}
+.nav{display:flex;flex-direction:column;gap:6px}
+.nav button{display:flex;align-items:center;gap:12px;padding:12px 14px;border-radius:999px;color:var(--ink2);font-weight:600;text-align:left;transition:background .2s,color .2s}
+.nav button:hover{background:var(--glass2);color:var(--ink)}
+.nav button.on{background:var(--dark);color:var(--on-dark);box-shadow:0 10px 24px -10px rgba(0,0,0,.6)}
+[data-theme="dark"] .nav button.on{background:#fff;color:#0e0e12}
+.nav .count{margin-left:auto;font-size:11px;opacity:.7;font-weight:700}
+.me{margin-top:auto;border-radius:22px;padding:14px;background:var(--glass2);border:1px solid var(--glass-b);text-align:center}
+.me .av{width:56px;height:56px;border-radius:50%;margin:0 auto 8px;display:grid;place-items:center;font-family:var(--font-d);font-weight:700;color:#fff;background:linear-gradient(135deg,#18181f,#6a55b8 60%,#c9a7ff);box-shadow:0 8px 20px -8px rgba(90,60,180,.7)}
+.me b{display:block;font-size:13px}.me span{font-size:11px;color:var(--ink3)}
+
+.main{display:flex;flex-direction:column;gap:16px;min-width:0}
+.top{display:flex;align-items:flex-start;justify-content:space-between;gap:16px;flex-wrap:wrap;padding:6px 6px 0}
+h1{font-family:var(--font-d);font-weight:800;font-size:clamp(40px,6vw,64px);line-height:.98;letter-spacing:-.035em}
+h1 small{display:block;font-family:var(--font-b);font-size:13px;font-weight:600;letter-spacing:0;color:var(--ink3);margin-top:12px}
+.tools{display:flex;align-items:center;gap:8px;padding:8px;border-radius:999px;flex-wrap:wrap;max-width:100%}
+.pill{display:flex;align-items:center;gap:8px;height:44px;padding:0 16px;border-radius:999px;background:var(--glass2);border:1px solid var(--glass-b);font-weight:600;font-size:13px;white-space:nowrap}
+.pill.search{padding:0 14px;min-width:200px;flex:1}
+.pill.search input{background:none;border:0;outline:0;width:100%;min-width:0}
+.pill.search:focus-within{box-shadow:0 0 0 2px var(--ink)}
+.circle{width:44px;height:44px;border-radius:50%;display:grid;place-items:center;background:var(--glass2);border:1px solid var(--glass-b)}
+.circle.dark{background:var(--dark);color:#fff;border-color:transparent}
+[data-theme="dark"] .circle.dark{background:#fff;color:#0e0e12}
+.circle:hover,.pill:hover{transform:translateY(-1px)}
+
+.row2{display:grid;grid-template-columns:1.25fr 1fr;gap:16px}
+.panel{border-radius:var(--radius);padding:20px}
+.panel h2{font-family:var(--font-d);font-size:15px;font-weight:600;display:flex;align-items:center;justify-content:space-between;gap:10px}
+.big{font-family:var(--font-d);font-size:46px;font-weight:700;letter-spacing:-.03em;line-height:1;margin:14px 0 2px}
+.big sup{font-size:.4em;font-weight:600;margin-left:2px;color:var(--ink3)}
+.muted{color:var(--ink3);font-size:12px}
+.spark{width:100%;height:84px;margin-top:6px}
+.spark path.l{fill:none;stroke:var(--ink);stroke-width:2;stroke-linecap:round}
+.spark path.l2{fill:none;stroke:var(--ink3);stroke-width:1.5;opacity:.55}
+.spark path.f{fill:url(#sg);opacity:.5}
+.legend{display:grid;gap:9px;margin-top:10px}
+.legend div{display:flex;align-items:center;gap:9px;font-weight:600;font-size:13px}
+.legend i{width:8px;height:8px;border-radius:50%;background:var(--ink)}
+.legend em{margin-left:auto;font-style:normal;color:var(--ink2)}
+
+.spot{background:linear-gradient(160deg,#1b1b24,#08080b 70%);color:var(--on-dark);border-radius:var(--radius);padding:20px;position:relative;overflow:hidden;display:flex;flex-direction:column;min-height:260px;box-shadow:var(--shadow)}
+.spot::before{content:"";position:absolute;width:340px;height:340px;right:-120px;top:-60px;border-radius:50%;background:conic-gradient(from 90deg,#cfc2ff,#fff,#ffcdb8,#b6f4dd,#cfc2ff);filter:blur(36px);opacity:.38}
+.spot h2{color:var(--on-dark);position:relative}
+.ring{position:relative;width:150px;height:150px;margin:14px auto 10px;border-radius:50%;padding:12px;background:conic-gradient(from 20deg,#fff,#9a8cff,#ffc3a8,#9bf0d3,#fff);box-shadow:0 20px 50px -14px rgba(160,140,255,.55)}
+.ring .inner{width:100%;height:100%;border-radius:50%;background:#101016;display:grid;place-items:center;overflow:hidden;padding:26px}
+.ring img{width:100%;height:100%;object-fit:contain;border-radius:18px}
+.spot .nm{position:relative;display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:auto}
+.spot .nm b{display:block;font-size:15px;font-family:var(--font-d)}.spot .nm span{font-size:12px;color:var(--on-dark2)}
+.btn{display:inline-flex;align-items:center;gap:8px;height:42px;padding:0 18px;border-radius:999px;font-weight:700;background:var(--dark);color:#fff;transition:transform .15s}
+.btn:hover{transform:translateY(-1px)}
+.btn.light{background:#fff;color:#0e0e12}
+.btn.ghost{background:var(--glass2);color:var(--ink);border:1px solid var(--glass-b)}
+[data-theme="dark"] .btn:not(.light):not(.ghost){background:#fff;color:#0e0e12}
+
+.seg{display:inline-flex;gap:2px;padding:4px;border-radius:999px;background:var(--glass2);border:1px solid var(--glass-b)}
+.seg button{padding:7px 14px;border-radius:999px;font-weight:600;font-size:12px;color:var(--ink2)}
+.seg button.on{background:var(--dark);color:#fff}
+[data-theme="dark"] .seg button.on{background:#fff;color:#0e0e12}
+.listhead{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:16px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:12px}
+.card{position:relative;display:flex;align-items:center;gap:14px;padding:14px;border-radius:22px;background:var(--glass2);border:1px solid var(--glass-b);cursor:pointer;transition:transform .2s,box-shadow .2s,background .2s;min-width:0}
+.card:hover{transform:translateY(-3px);box-shadow:0 16px 34px -16px rgba(50,50,90,.4);background:var(--glass-b)}
+[data-theme="dark"] .card:hover{background:rgba(255,255,255,.14)}
+.ico{width:52px;height:52px;border-radius:15px;flex:none;display:grid;place-items:center;overflow:hidden;background:#fff;box-shadow:0 4px 14px -6px rgba(30,30,60,.35),inset 0 0 0 1px var(--line);font-family:var(--font-d);font-weight:700;font-size:20px;color:#fff}
+.ico img{width:100%;height:100%;object-fit:cover}
+.ico.fb{background:linear-gradient(135deg,var(--c1),var(--c2))}
+.meta{min-width:0;flex:1}
+.meta h3{font-family:var(--font-d);font-size:14.5px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.meta p{font-size:12px;color:var(--ink3);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.chip{display:inline-block;margin-top:5px;font-size:10.5px;font-weight:700;padding:2px 9px;border-radius:999px;background:var(--line);color:var(--ink2)}
+.acts{display:flex;flex-direction:column;gap:2px;opacity:0;transition:opacity .15s}
+.card:hover .acts,.card:focus-within .acts{opacity:1}
+@media (hover:none){.acts{opacity:1}}
+.acts button{width:28px;height:28px;border-radius:50%;display:grid;place-items:center;color:var(--ink3)}
+.acts button:hover{background:var(--line);color:var(--ink)}
+.acts button.fav.on{color:#f5a524;opacity:1}
+.acts button.fav.on svg{fill:#f5a524}
+.card .star{position:absolute;top:10px;right:12px;color:#f5a524;font-size:12px;opacity:0}
+.empty{grid-column:1/-1;text-align:center;padding:50px 20px;color:var(--ink2)}
+.empty b{display:block;font-family:var(--font-d);font-size:18px;color:var(--ink);margin-bottom:6px}
+
+.most{background:linear-gradient(160deg,#17171f,#07070a);color:var(--on-dark);border-radius:var(--radius);padding:20px;box-shadow:var(--shadow);position:relative;overflow:hidden}
+.most::after{content:"";position:absolute;inset:auto -10% -60% -10%;height:70%;background:radial-gradient(ellipse,rgba(150,130,255,.35),transparent 70%);pointer-events:none}
+.most h2{font-family:var(--font-d);font-size:15px;font-weight:600;margin-bottom:16px}
+.mcols{display:grid;grid-template-columns:repeat(3,1fr);gap:0;position:relative;z-index:1}
+.mcols>div{padding:0 18px;border-left:1px solid rgba(255,255,255,.1);min-width:0}
+.mcols>div:first-child{border-left:0;padding-left:0}
+.mcols .t{display:flex;align-items:center;gap:10px;margin-bottom:14px}
+.mcols .ico{width:40px;height:40px;font-size:16px;border-radius:12px}
+.mcols .t b{font-size:13px;display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.mcols .t span{font-size:11px;color:var(--on-dark2)}
+.bar{height:5px;border-radius:9px;background:rgba(255,255,255,.14);overflow:hidden}
+.bar i{display:block;height:100%;border-radius:9px;background:linear-gradient(90deg,#fff,#c9b9ff)}
+.mcols small{display:flex;justify-content:space-between;color:var(--on-dark2);font-size:11px;margin-bottom:7px}
+.nomost{color:var(--on-dark2);font-size:13px;position:relative;z-index:1}
+
+footer.credit{text-align:center;color:var(--ink3);font-size:12px;padding:6px 0 90px}
+footer.credit b{color:var(--ink2)}
+
+/* modal */
+.scrim{position:fixed;inset:0;z-index:50;background:rgba(10,10,18,.38);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);display:none;align-items:center;justify-content:center;padding:16px}
+.scrim.open{display:flex}
+.modal{width:min(520px,100%);max-height:92vh;overflow:auto;border-radius:30px;padding:24px;background:var(--glass2);animation:pop .22s ease-out}
+[data-theme="light"] .modal{background:rgba(255,255,255,.86)}
+@keyframes pop{from{transform:translateY(14px) scale(.97);opacity:0}to{transform:none;opacity:1}}
+.modal h3{font-family:var(--font-d);font-size:20px;margin-bottom:4px}
+.modal .sub{color:var(--ink3);font-size:13px;margin-bottom:16px}
+.field{display:block;margin-bottom:12px}
+.field span{display:block;font-size:12px;font-weight:700;color:var(--ink2);margin-bottom:6px}
+.field input{width:100%;height:46px;padding:0 16px;border-radius:16px;border:1px solid var(--line);background:var(--glass2);outline:0}
+.field input:focus{border-color:var(--ink)}
+.prev{display:flex;align-items:center;gap:14px;padding:14px;border-radius:22px;background:linear-gradient(135deg,rgba(185,167,255,.2),rgba(255,194,168,.2),rgba(168,240,214,.2));border:1px solid var(--glass-b);margin-bottom:14px;min-height:84px}
+.prev .ico{width:60px;height:60px;font-size:24px}
+.prev .st{font-size:12px;color:var(--ink2)}
+.spin{width:16px;height:16px;border-radius:50%;border:2px solid var(--line);border-top-color:var(--ink);animation:sp .7s linear infinite;display:inline-block;vertical-align:-3px;margin-right:6px}
+@keyframes sp{to{transform:rotate(360deg)}}
+.mrow{display:flex;gap:10px;justify-content:flex-end;margin-top:6px;flex-wrap:wrap}
+.setrow{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:14px 0;border-top:1px solid var(--line)}
+.setrow:first-of-type{border-top:0}
+.setrow b{display:block;font-size:14px}.setrow span{font-size:12px;color:var(--ink3)}
+.sw{width:46px;height:28px;border-radius:99px;background:var(--line);position:relative;flex:none;transition:background .2s}
+.sw::after{content:"";position:absolute;top:3px;left:3px;width:22px;height:22px;border-radius:50%;background:#fff;box-shadow:0 2px 6px rgba(0,0,0,.3);transition:transform .2s}
+.sw.on{background:var(--dark)}[data-theme="dark"] .sw.on{background:#7c6cff}
+.sw.on::after{transform:translateX(18px)}
+
+/* floating install dock */
+.dock{position:fixed;right:max(18px,env(safe-area-inset-right));bottom:max(18px,env(safe-area-inset-bottom));z-index:40;display:none;flex-direction:column;align-items:flex-end;gap:10px}
+.dock.show{display:flex}
+.dock .menu{width:min(320px,calc(100vw - 36px));border-radius:26px;padding:16px;display:none;background:var(--glass2);animation:pop .22s ease-out}
+[data-theme="light"] .dock .menu{background:rgba(255,255,255,.88)}
+.dock.open .menu{display:block}
+.dock .menu h4{font-family:var(--font-d);font-size:15px;display:flex;justify-content:space-between;align-items:center;margin-bottom:4px}
+.dock .menu p{font-size:12px;color:var(--ink3);margin-bottom:12px}
+.dock .opt{display:flex;align-items:center;gap:12px;width:100%;padding:12px 14px;border-radius:18px;background:var(--dark);color:#fff;font-weight:700;margin-top:8px;text-align:left;text-decoration:none}
+[data-theme="dark"] .dock .opt{background:#fff;color:#0e0e12}
+.dock .opt.alt{background:var(--glass2);color:var(--ink);border:1px solid var(--glass-b)}
+.dock .opt small{display:block;font-weight:500;opacity:.7;font-size:11px}
+.dock .note{font-size:12px;color:var(--ink2);padding:10px 12px;border-radius:14px;background:var(--line);margin-top:8px}
+.fab{display:flex;align-items:center;gap:8px;height:50px;padding:0 20px 0 16px;border-radius:999px;font-weight:700;background:linear-gradient(135deg,#17171f,#5b49b8 70%,#a58bff);color:#fff;box-shadow:0 14px 34px -10px rgba(90,70,200,.7)}
+.fab.pulse{animation:pl 2.4s ease-in-out 3}
+@keyframes pl{50%{box-shadow:0 0 0 12px rgba(140,120,255,.18),0 14px 34px -10px rgba(90,70,200,.7)}}
+
+.toast{position:fixed;left:50%;bottom:calc(24px + env(safe-area-inset-bottom));transform:translate(-50%,30px);z-index:80;background:var(--dark);color:#fff;padding:12px 20px;border-radius:999px;font-weight:600;font-size:13px;opacity:0;pointer-events:none;transition:.25s;max-width:90vw}
+[data-theme="dark"] .toast{background:#fff;color:#0e0e12}
+.toast.on{opacity:1;transform:translate(-50%,0)}
+
+/* responsive */
+@media (max-width:980px){.row2{grid-template-columns:1fr}.spot{min-height:230px}}
+@media (max-width:820px){
+  .shell{grid-template-columns:1fr;padding-bottom:96px}
+  .side{position:fixed;left:12px;right:12px;bottom:max(12px,env(safe-area-inset-bottom));top:auto;height:auto;max-height:none;z-index:30;border-radius:999px;padding:8px;flex-direction:row}
+  .brand,.me{display:none}
+  .nav{flex-direction:row;width:100%;justify-content:space-around;gap:2px}
+  .nav button{flex:1;justify-content:center;padding:11px 8px;gap:0}
+  .nav button span.lbl{display:none}
+  .nav button.on span.lbl{display:inline;margin-left:8px}
+  .nav .count{display:none}
+  .dock{bottom:calc(88px + env(safe-area-inset-bottom))}
+  .tools{width:100%;border-radius:28px}
+  .mcols{grid-template-columns:1fr;gap:18px}.mcols>div{border-left:0;padding:0}
+  .acts{flex-direction:row}
+  .card{flex-wrap:wrap}
+  footer.credit{padding-bottom:110px}
+}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+<div class="bg" aria-hidden="true"><i class="a"></i><i class="b"></i><i class="c"></i><i class="stone s1"></i><i class="stone s2"></i></div>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
+  <symbol id="i-grid" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="2"/><rect x="14" y="3" width="7" height="7" rx="2"/><rect x="3" y="14" width="7" height="7" rx="2"/><rect x="14" y="14" width="7" height="7" rx="2"/></symbol>
+  <symbol id="i-star" viewBox="0 0 24 24"><path d="M12 3l2.7 5.6 6.1.9-4.4 4.3 1 6.1L12 17l-5.4 2.9 1-6.1L3.2 9.5l6.1-.9z"/></symbol>
+  <symbol id="i-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></symbol>
+  <symbol id="i-gear" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></symbol>
+  <symbol id="i-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></symbol>
+  <symbol id="i-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></symbol>
+  <symbol id="i-cal" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="16" rx="3"/><path d="M8 3v4M16 3v4M3 10h18"/></symbol>
+  <symbol id="i-edit" viewBox="0 0 24 24"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4z"/></symbol>
+  <symbol id="i-trash" viewBox="0 0 24 24"><path d="M3 6h18M8 6V4h8v2M19 6l-1 14H6L5 6"/></symbol>
+  <symbol id="i-copy" viewBox="0 0 24 24"><rect x="9" y="9" width="12" height="12" rx="3"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></symbol>
+  <symbol id="i-up" viewBox="0 0 24 24"><path d="M7 17L17 7M8 7h9v9"/></symbol>
+  <symbol id="i-down" viewBox="0 0 24 24"><path d="M12 3v12M7 10l5 5 5-5M5 21h14"/></symbol>
+  <symbol id="i-x" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></symbol>
+  <symbol id="i-phone" viewBox="0 0 24 24"><rect x="7" y="2" width="10" height="20" rx="3"/><path d="M11 18h2"/></symbol>
+  <symbol id="i-monitor" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="12" rx="2"/><path d="M8 21h8M12 16v5"/></symbol>
+</defs></svg>
+
+<div class="shell">
+  <aside class="side glass" aria-label="Sections">
+    <div class="brand"><img src="icons/icon-192.png" alt="" width="34" height="34"><span>Project Store</span></div>
+    <nav class="nav" id="nav">
+      <button data-f="all" class="on"><svg class="i"><use href="#i-grid"/></svg><span class="lbl">All projects</span><b class="count" id="cAll">0</b></button>
+      <button data-f="fav"><svg class="i"><use href="#i-star"/></svg><span class="lbl">Favorites</span><b class="count" id="cFav">0</b></button>
+      <button data-f="recent"><svg class="i"><use href="#i-clock"/></svg><span class="lbl">Recent</span></button>
+      <button id="navSet"><svg class="i"><use href="#i-gear"/></svg><span class="lbl">Settings</span></button>
+    </nav>
+    <div class="me"><div class="av">MT</div><b>MD Tahsin Islam</b><span>Builder &amp; maker</span></div>
+  </aside>
+
+  <main class="main">
+    <header class="top">
+      <h1>Project<br>Store<small id="sub">Everything I've shipped, one tap away.</small></h1>
+      <div class="tools glass">
+        <div class="pill" title="Today"><svg class="i"><use href="#i-cal"/></svg><span id="dt">—</span></div>
+        <label class="pill search"><svg class="i"><use href="#i-search"/></svg><input id="q" type="search" placeholder="Search projects" autocomplete="off" aria-label="Search projects"></label>
+        <button class="circle dark" id="addBtn" aria-label="Add project" title="Add project"><svg class="i"><use href="#i-plus"/></svg></button>
+        <button class="circle" id="setBtn" aria-label="Settings" title="Settings"><svg class="i"><use href="#i-gear"/></svg></button>
+      </div>
+    </header>
+
+    <section class="row2">
+      <div class="panel glass">
+        <h2>Library <svg class="i" style="opacity:.5"><use href="#i-grid"/></svg></h2>
+        <div class="big" id="bTotal">0</div>
+        <div class="muted" id="bSub">projects saved</div>
+        <svg class="spark" id="spark" viewBox="0 0 300 84" preserveAspectRatio="none"><defs><linearGradient id="sg" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="#b9a7ff"/><stop offset="1" stop-color="#b9a7ff" stop-opacity="0"/></linearGradient></defs></svg>
+        <div class="legend" id="legend"></div>
+      </div>
+      <div class="spot" id="spot"></div>
+    </section>
+
+    <section class="panel glass">
+      <div class="listhead">
+        <h2 id="listTitle" style="font-size:17px">All projects</h2>
+        <div class="seg" id="sort" role="group" aria-label="Sort">
+          <button data-s="new" class="on">Newest</button><button data-s="opens">Most opened</button><button data-s="az">A–Z</button>
+        </div>
+      </div>
+      <div class="grid" id="grid"></div>
+    </section>
+
+    <section class="most" id="most"></section>
+
+    <footer class="credit">Designed &amp; built by <b>MD Tahsin Islam</b> · stored only on this device</footer>
+  </main>
+</div>
+
+<!-- add / edit modal -->
+<div class="scrim" id="mAdd" role="dialog" aria-modal="true" aria-labelledby="mAddT">
+  <div class="modal glass">
+    <h3 id="mAddT">Add project</h3>
+    <p class="sub">Paste a link. The name and icon are detected for you.</p>
+    <label class="field"><span>Project link</span><input id="fUrl" type="url" inputmode="url" placeholder="https://my-app.vercel.app" autocomplete="off"></label>
+    <div class="prev" id="prev"><span class="st">Waiting for a link…</span></div>
+    <label class="field"><span>Name</span><input id="fName" type="text" placeholder="Detected name" maxlength="60"></label>
+    <label class="field"><span>Note (optional)</span><input id="fDesc" type="text" placeholder="What it does" maxlength="120"></label>
+    <label class="field"><span>Icon link (optional)</span><input id="fIcon" type="url" placeholder="Paste an image link to override"></label>
+    <div class="mrow"><button class="btn ghost" data-close>Cancel</button><button class="btn" id="saveBtn">Save project</button></div>
+  </div>
+</div>
+
+<!-- settings modal -->
+<div class="scrim" id="mSet" role="dialog" aria-modal="true" aria-labelledby="mSetT">
+  <div class="modal glass">
+    <h3 id="mSetT">Settings</h3>
+    <p class="sub">Your projects are saved on this device. Export a backup so you never lose them.</p>
+    <div class="setrow"><div><b>Dark mode</b><span>Switch the glass theme</span></div><button class="sw" id="swTheme" role="switch" aria-label="Dark mode"></button></div>
+    <div class="setrow"><div><b>Open in same tab</b><span>Off = opens each project in a new tab</span></div><button class="sw" id="swSame" role="switch" aria-label="Open in same tab"></button></div>
+    <div class="setrow"><div><b>Export backup</b><span>Download all projects as a file</span></div><button class="btn ghost" id="exBtn"><svg class="i"><use href="#i-down"/></svg>Export</button></div>
+    <div class="setrow"><div><b>Import backup</b><span>Merge projects from a backup file</span></div><button class="btn ghost" id="imBtn">Import</button><input type="file" id="imFile" accept="application/json,.json" hidden></div>
+    <div class="setrow"><div><b>Refresh all icons</b><span>Detect icons again for every project</span></div><button class="btn ghost" id="refBtn">Refresh</button></div>
+    <div class="setrow"><div><b>Clear everything</b><span>Delete all projects from this device</span></div><button class="btn ghost" id="clrBtn" style="color:#d33">Clear</button></div>
+    <p class="muted" style="margin-top:14px;text-align:center">Project Store · by MD Tahsin Islam</p>
+    <div class="mrow"><button class="btn" data-close>Done</button></div>
+  </div>
+</div>
+
+<!-- floating install dock -->
+<div class="dock" id="dock">
+  <div class="menu glass" id="dockMenu">
+    <h4>Get the app <button data-dock-close aria-label="Close" class="circle" style="width:30px;height:30px"><svg class="i" style="width:14px;height:14px"><use href="#i-x"/></svg></button></h4>
+    <p id="dockP">Install Project Store like a real app. It opens in its own window, works offline and can be pinned.</p>
+    <button class="opt" id="optInstall"><svg class="i"><use href="#i-monitor"/></svg><span>Install app<small id="optInstallS">Phone, tablet or laptop</small></span></button>
+    <a class="opt alt" id="optApk" href="app.apk" download hidden><svg class="i"><use href="#i-phone"/></svg><span>Download APK<small>Android package</small></span></a>
+    <div class="note" id="dockNote" hidden></div>
+  </div>
+  <button class="fab pulse" id="fab"><svg class="i"><use href="#i-down"/></svg><span>Get app</span></button>
+</div>
+
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script>
+(() => {
+'use strict';
+const $ = (s, r = document) => r.querySelector(s);
+const $$ = (s, r = document) => [...r.querySelectorAll(s)];
+const LS = 'pstore.v2';
+const uid = () => Math.random().toString(36).slice(2, 9) + Date.now().toString(36).slice(-4);
+const esc = (s) => String(s ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+const ic = (n) => `<svg class="i"><use href="#i-${n}"/></svg>`;
+
+/* ---------- state + storage (with migration) ---------- */
+let state = { v: 2, projects: [], settings: { theme: 'light', openSame: false } };
+let ui = { filter: 'all', sort: 'new', q: '', editId: null };
+
+function migrate(d) {
+  const list = Array.isArray(d) ? d : (d.projects || []);
+  if (d && !Array.isArray(d) && d.settings) Object.assign(state.settings, d.settings);
+  state.projects = list.filter((p) => p && p.url).map((p) => ({
+    id: p.id || uid(), url: p.url, name: p.name || guessName(p.url), icon: p.icon || '', desc: p.desc || '',
+    fav: !!p.fav, added: p.added || Date.now(), opens: p.opens || 0, last: p.last || 0
+  }));
+}
+function load() {
+  try {
+    const raw = localStorage.getItem(LS) || localStorage.getItem('pstore.v1');
+    if (raw) migrate(JSON.parse(raw));
+  } catch (e) { console.warn('load failed', e); }
+}
+function save() { try { localStorage.setItem(LS, JSON.stringify(state)); } catch (e) { toast('Could not save — storage is full or blocked'); } }
+
+/* ---------- url helpers ---------- */
+const HOSTS = [
+  [/(^|\.)github\.io$/, 'GitHub Pages'], [/(^|\.)github\.com$/, 'GitHub'], [/(^|\.)vercel\.app$/, 'Vercel'],
+  [/(^|\.)netlify\.app$/, 'Netlify'], [/(^|\.)pages\.dev$/, 'Cloudflare'], [/(^|\.)workers\.dev$/, 'Cloudflare'],
+  [/(^|\.)onrender\.com$/, 'Render'], [/(^|\.)web\.app$|(^|\.)firebaseapp\.com$/, 'Firebase'],
+  [/(^|\.)surge\.sh$/, 'Surge'], [/(^|\.)glitch\.me$/, 'Glitch'], [/(^|\.)replit\.(app|dev)$/, 'Replit'],
+  [/(^|\.)railway\.app$/, 'Railway'], [/(^|\.)fly\.dev$/, 'Fly.io'], [/(^|\.)herokuapp\.com$/, 'Heroku'],
+  [/(^|\.)huggingface\.co$|(^|\.)hf\.space$/, 'Hugging Face'], [/(^|\.)streamlit\.app$/, 'Streamlit']
+];
+function normUrl(s) {
+  s = String(s || '').trim();
+  if (!s) return null;
+  if (!/^[a-z][a-z0-9+.-]*:\/\//i.test(s)) s = 'https://' + s;
+  try { const u = new URL(s); if (!/^https?:$/.test(u.protocol) || !u.hostname.includes('.')) return null; return u.href; } catch { return null; }
+}
+const keyOf = (u) => { try { const x = new URL(u); return (x.hostname.replace(/^www\./, '') + x.pathname).replace(/\/+$/, '').toLowerCase(); } catch { return u; } };
+const hostOf = (u) => { try { return new URL(u).hostname.replace(/^www\./, ''); } catch { return u; } };
+function hostGroup(u) { const h = hostOf(u); for (const [re, n] of HOSTS) if (re.test(h)) return n; return 'Custom domain'; }
+function titleCase(s) { return s.replace(/[-_.]+/g, ' ').replace(/\s+/g, ' ').trim().replace(/\b\w/g, (c) => c.toUpperCase()); }
+function ghInfo(u) {
+  try { const x = new URL(u); if (/(^|\.)github\.com$/.test(x.hostname)) { const [o, r] = x.pathname.split('/').filter(Boolean); if (o && r) return { o, r: r.replace(/\.git$/, '') }; } } catch {}
+  return null;
+}
+function guessName(u) {
+  try {
+    const x = new URL(u); const h = x.hostname.replace(/^www\./, ''); const parts = x.pathname.split('/').filter(Boolean);
+    const gh = ghInfo(u); if (gh) return titleCase(gh.r);
+    if (/github\.io$/.test(h)) return titleCase(parts[0] || h.split('.')[0]);
+    for (const [re] of HOSTS) if (re.test(h)) return titleCase(h.split('.')[0]);
+    const lab = h.split('.'); return titleCase(lab.length > 2 ? lab[lab.length - 3] === 'www' ? lab[0] : lab[0] : lab[0]);
+  } catch { return 'Project'; }
+}
+function fbColors(s) { let h = 0; for (const c of s) h = (h * 31 + c.charCodeAt(0)) >>> 0; const a = h % 360; return [`hsl(${a} 70% 55%)`, `hsl(${(a + 50) % 360} 70% 45%)`]; }
+function iconHTML(p, cls = '') {
+  const [c1, c2] = fbColors(p.name || p.url);
+  const letter = esc((p.name || '?').trim().charAt(0).toUpperCase());
+  if (!p.icon) return `<div class="ico fb ${cls}" style="--c1:${c1};--c2:${c2}">${letter}</div>`;
+  return `<div class="ico ${cls}" data-letter="${letter}" data-c1="${c1}" data-c2="${c2}"><img src="${esc(p.icon)}" alt="" loading="lazy" referrerpolicy="no-referrer"></div>`;
+}
+document.addEventListener('error', (e) => {
+  const t = e.target;
+  if (t.tagName === 'IMG' && t.parentElement && t.parentElement.dataset.letter) {
+    const p = t.parentElement; p.classList.add('fb'); p.style.setProperty('--c1', p.dataset.c1); p.style.setProperty('--c2', p.dataset.c2); p.textContent = p.dataset.letter;
+  }
+}, true);
+
+/* ---------- auto detect: name + icon ---------- */
+const withTimeout = (p, ms) => Promise.race([p, new Promise((_, r) => setTimeout(() => r(new Error('timeout')), ms))]);
+function testImg(src) {
+  return new Promise((res) => {
+    const im = new Image(); let done = false;
+    const fin = (ok) => { if (!done) { done = true; res(ok); } };
+    im.referrerPolicy = 'no-referrer';
+    im.onload = () => fin(im.naturalWidth >= 16 || /\.svg(\?|$)/i.test(src));
+    im.onerror = () => fin(false);
+    setTimeout(() => fin(false), 4500);
+    im.src = src;
+  });
+}
+async function pageMeta(url) {
+  const out = { title: '', icons: [] };
+  try {
+    const r = await withTimeout(fetch('https://api.allorigins.win/raw?url=' + encodeURIComponent(url)), 7000);
+    if (!r.ok) return out;
+    const html = await r.text(); const doc = new DOMParser().parseFromString(html, 'text/html');
+    const abs = (h) => { try { return new URL(h, url).href; } catch { return null; } };
+    const site = doc.querySelector('meta[property="og:site_name"]')?.content || '';
+    const t = doc.querySelector('meta[property="og:title"]')?.content || doc.title || '';
+    out.title = (site || t || '').trim();
+    out.desc = (doc.querySelector('meta[name="description"]')?.content || doc.querySelector('meta[property="og:description"]')?.content || '').trim();
+    const size = (l) => parseInt((l.getAttribute('sizes') || '0').split('x')[0], 10) || 0;
+    const links = $$('link[rel*="icon"]', doc).sort((a, b) => size(b) - size(a));
+    const apple = links.filter((l) => /apple-touch/i.test(l.rel)), other = links.filter((l) => !/apple-touch/i.test(l.rel));
+    [...apple, ...other].forEach((l) => { const a = abs(l.getAttribute('href')); if (a) out.icons.push(a); });
+    const og = doc.querySelector('meta[property="og:image"]')?.content; if (og && !out.icons.length) { const a = abs(og); if (a) out.icons.push(a); }
+    const fav = abs('/favicon.ico'); if (fav) out.icons.push(fav);
+  } catch {}
+  return out;
+}
+async function detect(url) {
+  const out = { name: guessName(url), desc: '', icon: '' };
+  const cands = [];
+  const gh = ghInfo(url);
+  if (gh) {
+    try {
+      const r = await withTimeout(fetch(`https://api.github.com/repos/${gh.o}/${gh.r}`), 6000);
+      if (r.ok) {
+        const j = await r.json(); out.name = titleCase(j.name || gh.r); out.desc = j.description || '';
+        if (j.homepage) { const hp = normUrl(j.homepage); if (hp) { const m = await pageMeta(hp); cands.push(...m.icons); } }
+        if (j.owner?.avatar_url) cands.push(j.owner.avatar_url);
+      } else cands.push(`https://github.com/${gh.o}.png`);
+    } catch { cands.push(`https://github.com/${gh.o}.png`); }
+  } else {
+    const m = await pageMeta(url);
+    const bad = /^(vite app|react app|home|index|untitled|document|welcome|just a moment\.{0,3}|loading\.{0,3})$/i;
+    let t = (m.title || '').split(/\s+[|–—·•-]\s+/)[0].trim();
+    if (t && t.length > 1 && t.length <= 40 && !bad.test(t)) out.name = t;
+    if (m.desc) out.desc = m.desc.slice(0, 120);
+    cands.push(...m.icons);
+  }
+  const h = hostOf(url);
+  cands.push(`https://www.google.com/s2/favicons?domain=${h}&sz=128`, `https://icons.duckduckgo.com/ip3/${h}.ico`);
+  for (const c of [...new Set(cands)]) { if (await testImg(c)) { out.icon = c; break; } }
+  return out;
+}
+
+/* ---------- render ---------- */
+function visible() {
+  let list = state.projects.slice();
+  if (ui.filter === 'fav') list = list.filter((p) => p.fav);
+  if (ui.filter === 'recent') list = list.filter((p) => p.last).sort((a, b) => b.last - a.last);
+  const q = ui.q.trim().toLowerCase();
+  if (q) list = list.filter((p) => (p.name + ' ' + p.url + ' ' + p.desc + ' ' + hostGroup(p.url)).toLowerCase().includes(q));
+  if (ui.filter !== 'recent') {
+    if (ui.sort === 'new') list.sort((a, b) => b.added - a.added);
+    if (ui.sort === 'opens') list.sort((a, b) => b.opens - a.opens || b.added - a.added);
+    if (ui.sort === 'az') list.sort((a, b) => a.name.localeCompare(b.name));
+  }
+  return list;
+}
+function card(p) {
+  return `<article class="card" data-id="${p.id}" tabindex="0" role="link" aria-label="Open ${esc(p.name)}">
+    ${iconHTML(p)}
+    <div class="meta"><h3>${esc(p.name)}</h3><p>${esc(p.desc || hostOf(p.url))}</p><span class="chip">${esc(hostGroup(p.url))}</span></div>
+    <div class="acts">
+      <button class="fav ${p.fav ? 'on' : ''}" data-a="fav" aria-label="Favorite" title="Favorite">${ic('star')}</button>
+      <button data-a="copy" aria-label="Copy link" title="Copy link">${ic('copy')}</button>
+      <button data-a="edit" aria-label="Edit" title="Edit">${ic('edit')}</button>
+      <button data-a="del" aria-label="Delete" title="Delete">${ic('trash')}</button>
+    </div></article>`;
+}
+function renderGrid() {
+  const list = visible(); const g = $('#grid');
+  if (!list.length) {
+    const none = !state.projects.length;
+    g.innerHTML = `<div class="empty"><b>${none ? 'No projects yet' : ui.q ? 'Nothing matches that search' : ui.filter === 'fav' ? 'No favorites yet' : 'Nothing opened yet'}</b>${none ? 'Paste a link anywhere on this page, or press the + button.' : ui.q ? 'Try a different word.' : ui.filter === 'fav' ? 'Tap the star on a project to pin it here.' : 'Projects you open will show up here.'}</div>`;
+  } else g.innerHTML = list.map(card).join('');
+  $('#listTitle').textContent = { all: 'All projects', fav: 'Favorites', recent: 'Recently opened' }[ui.filter];
+  $('#sort').style.display = ui.filter === 'recent' ? 'none' : '';
+}
+function spark() {
+  const days = 14, now = new Date(); now.setHours(23, 59, 59, 999);
+  const adds = Array(days).fill(0), opens = Array(days).fill(0);
+  state.projects.forEach((p) => {
+    const a = Math.floor((now - p.added) / 864e5); if (a >= 0 && a < days) adds[days - 1 - a]++;
+    if (p.last) { const o = Math.floor((now - p.last) / 864e5); if (o >= 0 && o < days) opens[days - 1 - o]++; }
+  });
+  const path = (arr) => {
+    const mx = Math.max(1, ...arr), pts = arr.map((v, i) => [i * (300 / (days - 1)), 74 - (v / mx) * 60]);
+    let d = `M${pts[0][0]},${pts[0][1]}`;
+    for (let i = 1; i < pts.length; i++) { const [x0, y0] = pts[i - 1], [x1, y1] = pts[i], mx2 = (x0 + x1) / 2; d += ` C${mx2},${y0} ${mx2},${y1} ${x1},${y1}`; }
+    return d;
+  };
+  const d1 = path(adds);
+  $('#spark').innerHTML = `<defs><linearGradient id="sg" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="#b9a7ff"/><stop offset="1" stop-color="#b9a7ff" stop-opacity="0"/></linearGradient></defs><path class="f" d="${d1} L300,84 L0,84Z"/><path class="l2" d="${path(opens)}"/><path class="l" d="${d1}"/>`;
+}
+function renderStats() {
+  const P = state.projects, n = P.length, favs = P.filter((p) => p.fav).length;
+  $('#bTotal').textContent = n; $('#bSub').textContent = n === 1 ? 'project saved' : 'projects saved';
+  $('#cAll').textContent = n; $('#cFav').textContent = favs;
+  $('#sub').textContent = n ? `${n} project${n === 1 ? '' : 's'} shipped. Tap one to open it.` : 'Everything I\u2019ve shipped, one tap away.';
+  spark();
+  const groups = {}; P.forEach((p) => { const g = hostGroup(p.url); groups[g] = (groups[g] || 0) + 1; });
+  const top = Object.entries(groups).sort((a, b) => b[1] - a[1]).slice(0, 4);
+  $('#legend').innerHTML = top.length ? top.map(([g, c]) => `<div><i style="opacity:${1 - top.findIndex((t) => t[0] === g) * .22}"></i>${esc(g)}<em>${Math.round(c / n * 100)}%</em></div>`).join('') : '<div class="muted" style="font-weight:500">Hosting split appears here.</div>';
+  // spotlight
+  const best = P.slice().sort((a, b) => (b.last || 0) - (a.last || 0) || b.added - a.added)[0];
+  $('#spot').innerHTML = best ? `<h2>Spotlight ${ic('up')}</h2>
+    <div class="ring"><div class="inner">${best.icon ? `<img src="${esc(best.icon)}" alt="" referrerpolicy="no-referrer" onerror="this.replaceWith(document.createTextNode('${esc(best.name.charAt(0).toUpperCase())}'))">` : `<span style="font-family:var(--font-d);font-size:44px;font-weight:700">${esc(best.name.charAt(0).toUpperCase())}</span>`}</div></div>
+    <div class="nm"><div style="min-width:0"><b>${esc(best.name)}</b><span>${best.last ? 'Opened ' + ago(best.last) : 'Added ' + ago(best.added)}</span></div><button class="btn light" data-open="${best.id}">Open ${ic('up')}</button></div>`
+    : `<h2>Spotlight</h2><div style="margin:auto;text-align:center;color:var(--on-dark2);position:relative">Your latest project will be shown here.<br><br><button class="btn light" id="spotAdd">${ic('plus')}Add project</button></div>`;
+  // most opened
+  const mo = P.filter((p) => p.opens > 0).sort((a, b) => b.opens - a.opens).slice(0, 3);
+  const mx = mo[0]?.opens || 1;
+  $('#most').innerHTML = `<h2>Most opened</h2>` + (mo.length ? `<div class="mcols">${mo.map((p) => `<div><div class="t">${iconHTML(p)}<div style="min-width:0"><b>${esc(p.name)}</b><span>${esc(hostGroup(p.url))}</span></div></div><small><span>Opens</span><span>${p.opens}</span></small><div class="bar"><i style="width:${Math.max(8, p.opens / mx * 100)}%"></i></div></div>`).join('')}</div>` : `<div class="nomost">Open a few projects and your top three will show up here.</div>`);
+}
+function ago(t) {
+  const s = (Date.now() - t) / 1000;
+  if (s < 60) return 'just now'; if (s < 3600) return Math.floor(s / 60) + ' min ago'; if (s < 86400) return Math.floor(s / 3600) + ' h ago';
+  if (s < 604800) return Math.floor(s / 86400) + ' d ago'; return new Date(t).toLocaleDateString(undefined, { day: 'numeric', month: 'short' });
+}
+function render() { renderGrid(); renderStats(); }
+
+/* ---------- actions ---------- */
+function openProject(id) {
+  const p = state.projects.find((x) => x.id === id); if (!p) return;
+  p.opens++; p.last = Date.now(); save(); render();
+  if (state.settings.openSame) location.href = p.url; else window.open(p.url, '_blank', 'noopener');
+}
+async function copyText(t) { try { await navigator.clipboard.writeText(t); toast('Link copied'); } catch { toast('Copy failed'); } }
+$('#grid').addEventListener('click', (e) => {
+  const c = e.target.closest('.card'); if (!c) return; const id = c.dataset.id; const b = e.target.closest('button[data-a]');
+  if (!b) return openProject(id);
+  e.stopPropagation(); const p = state.projects.find((x) => x.id === id); if (!p) return;
+  const a = b.dataset.a;
+  if (a === 'fav') { p.fav = !p.fav; save(); render(); toast(p.fav ? 'Added to favorites' : 'Removed from favorites'); }
+  if (a === 'copy') copyText(p.url);
+  if (a === 'edit') openAdd(p);
+  if (a === 'del') { if (confirm(`Delete "${p.name}"?`)) { state.projects = state.projects.filter((x) => x.id !== id); save(); render(); toast('Project deleted'); } }
+});
+$('#grid').addEventListener('keydown', (e) => { if ((e.key === 'Enter' || e.key === ' ') && e.target.classList.contains('card')) { e.preventDefault(); openProject(e.target.dataset.id); } });
+document.addEventListener('click', (e) => { const o = e.target.closest('[data-open]'); if (o) openProject(o.dataset.open); if (e.target.id === 'spotAdd' || e.target.closest('#spotAdd')) openAdd(); });
+
+$('#nav').addEventListener('click', (e) => {
+  const b = e.target.closest('button'); if (!b) return;
+  if (b.id === 'navSet') return openModal('mSet');
+  ui.filter = b.dataset.f; $$('#nav button').forEach((x) => x.classList.toggle('on', x === b)); renderGrid();
+});
+$('#sort').addEventListener('click', (e) => { const b = e.target.closest('button'); if (!b) return; ui.sort = b.dataset.s; $$('#sort button').forEach((x) => x.classList.toggle('on', x === b)); renderGrid(); });
+$('#q').addEventListener('input', (e) => { ui.q = e.target.value; renderGrid(); });
+
+/* ---------- modals ---------- */
+function openModal(id) { $('#' + id).classList.add('open'); }
+function closeModals() { $$('.scrim').forEach((s) => s.classList.remove('open')); detectToken++; }
+$$('.scrim').forEach((s) => s.addEventListener('mousedown', (e) => { if (e.target === s) closeModals(); }));
+document.addEventListener('click', (e) => { if (e.target.closest('[data-close]')) closeModals(); });
+
+let detectToken = 0, found = { name: '', desc: '', icon: '' }, timer;
+function renderPrev() {
+  const name = $('#fName').value || found.name || 'Project'; const icon = $('#fIcon').value.trim() || found.icon;
+  $('#prev').innerHTML = `${iconHTML({ name, icon })}<div class="meta"><h3 style="font-size:16px">${esc(name)}</h3><p>${esc($('#fDesc').value || found.desc || hostOf(normUrl($('#fUrl').value) || 'example.com'))}</p></div>`;
+}
+function openAdd(p) {
+  ui.editId = p ? p.id : null; detectToken++;
+  $('#mAddT').textContent = p ? 'Edit project' : 'Add project';
+  $('#saveBtn').textContent = p ? 'Save changes' : 'Save project';
+  $('#fUrl').value = p ? p.url : ''; $('#fName').value = p ? p.name : ''; $('#fDesc').value = p ? p.desc : ''; $('#fIcon').value = '';
+  found = { name: p ? p.name : '', desc: p ? p.desc : '', icon: p ? p.icon : '' };
+  if (p) renderPrev(); else $('#prev').innerHTML = '<span class="st">Waiting for a link…</span>';
+  openModal('mAdd'); setTimeout(() => $('#fUrl').focus(), 60);
+}
+async function runDetect() {
+  const url = normUrl($('#fUrl').value); if (!url) return;
+  const tk = ++detectToken;
+  $('#prev').innerHTML = '<span class="st"><span class="spin"></span>Detecting name and icon…</span>';
+  const d = await detect(url); if (tk !== detectToken) return;
+  found = d; if (!ui.editId || !$('#fName').value) $('#fName').value = d.name; else if (!$('#fName').value) $('#fName').value = d.name;
+  if (!$('#fDesc').value) $('#fDesc').value = d.desc || '';
+  renderPrev();
+}
+$('#fUrl').addEventListener('input', () => { clearTimeout(timer); if (normUrl($('#fUrl').value)) { $('#prev').innerHTML = '<span class="st"><span class="spin"></span>Detecting name and icon…</span>'; timer = setTimeout(() => { if (ui.editId) { $('#fName').value = ''; } $('#fDesc').value = ui.editId ? $('#fDesc').value : ''; runDetect(); }, 600); } });
+$('#fUrl').addEventListener('paste', () => setTimeout(() => $('#fUrl').dispatchEvent(new Event('input')), 0));
+['fName', 'fDesc', 'fIcon'].forEach((id) => $('#' + id).addEventListener('input', renderPrev));
+$('#saveBtn').addEventListener('click', () => {
+  const url = normUrl($('#fUrl').value); if (!url) return toast('Enter a valid link, like https://my-app.vercel.app');
+  const name = $('#fName').value.trim() || found.name || guessName(url);
+  const icon = $('#fIcon').value.trim() || found.icon || '';
+  const dup = state.projects.find((p) => keyOf(p.url) === keyOf(url) && p.id !== ui.editId);
+  if (dup) return toast(`Already saved as "${dup.name}"`);
+  if (ui.editId) { Object.assign(state.projects.find((p) => p.id === ui.editId), { url, name, icon, desc: $('#fDesc').value.trim() }); toast('Changes saved'); }
+  else { state.projects.unshift({ id: uid(), url, name, icon, desc: $('#fDesc').value.trim(), fav: false, added: Date.now(), opens: 0, last: 0 }); toast(`${name} added`); }
+  save(); closeModals(); render();
+});
+$('#fUrl').addEventListener('keydown', (e) => { if (e.key === 'Enter') { e.preventDefault(); $('#saveBtn').click(); } });
+$('#addBtn').addEventListener('click', () => openAdd());
+$('#setBtn').addEventListener('click', () => { syncSettings(); openModal('mSet'); });
+$('#navSet').addEventListener('click', syncSettings);
+
+/* ---------- settings ---------- */
+function applyTheme() {
+  document.documentElement.dataset.theme = state.settings.theme;
+  $('#themeColor').content = state.settings.theme === 'dark' ? '#101116' : '#eceef2';
+}
+function syncSettings() { $('#swTheme').classList.toggle('on', state.settings.theme === 'dark'); $('#swSame').classList.toggle('on', !!state.settings.openSame); }
+$('#swTheme').addEventListener('click', () => { state.settings.theme = state.settings.theme === 'dark' ? 'light' : 'dark'; save(); applyTheme(); syncSettings(); });
+$('#swSame').addEventListener('click', () => { state.settings.openSame = !state.settings.openSame; save(); syncSettings(); });
+$('#exBtn').addEventListener('click', () => {
+  const blob = new Blob([JSON.stringify(state, null, 2)], { type: 'application/json' }); const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob); a.download = `project-store-backup-${new Date().toISOString().slice(0, 10)}.json`; a.click(); setTimeout(() => URL.revokeObjectURL(a.href), 2000); toast('Backup downloaded');
+});
+$('#imBtn').addEventListener('click', () => $('#imFile').click());
+$('#imFile').addEventListener('change', async (e) => {
+  const f = e.target.files[0]; if (!f) return;
+  try {
+    const d = JSON.parse(await f.text()); const list = Array.isArray(d) ? d : d.projects; if (!Array.isArray(list)) throw 0;
+    let n = 0; list.forEach((p) => { const url = normUrl(p.url); if (url && !state.projects.some((x) => keyOf(x.url) === keyOf(url))) { state.projects.push({ id: uid(), url, name: p.name || guessName(url), icon: p.icon || '', desc: p.desc || '', fav: !!p.fav, added: p.added || Date.now(), opens: p.opens || 0, last: p.last || 0 }); n++; } });
+    save(); render(); toast(`${n} project${n === 1 ? '' : 's'} imported`);
+  } catch { toast('That file is not a valid backup'); }
+  e.target.value = '';
+});
+$('#refBtn').addEventListener('click', async () => {
+  if (!state.projects.length) return toast('No projects to refresh');
+  toast('Refreshing icons…'); let n = 0;
+  await Promise.all(state.projects.map(async (p) => { const d = await detect(p.url); if (d.icon) { p.icon = d.icon; n++; } }));
+  save(); render(); toast(`${n} icon${n === 1 ? '' : 's'} refreshed`);
+});
+$('#clrBtn').addEventListener('click', () => { if (confirm('Delete ALL projects from this device? Export a backup first if unsure.')) { state.projects = []; save(); render(); toast('Everything cleared'); } });
+
+/* ---------- paste a link anywhere ---------- */
+document.addEventListener('paste', (e) => {
+  if (/INPUT|TEXTAREA/.test(document.activeElement.tagName) || $('.scrim.open')) return;
+  const t = (e.clipboardData?.getData('text') || '').trim(); const u = normUrl(t.split(/\s+/)[0]);
+  if (u && !/\s/.test(t.replace(/\s+$/, '')) ) { openAdd(); $('#fUrl').value = u; $('#fUrl').dispatchEvent(new Event('input')); }
+});
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape') closeModals();
+  if (e.key === '/' && !/INPUT|TEXTAREA/.test(document.activeElement.tagName) && !$('.scrim.open')) { e.preventDefault(); $('#q').focus(); }
+});
+
+/* ---------- install dock (PWA + optional APK) ---------- */
+let deferred = null;
+const standalone = matchMedia('(display-mode: standalone)').matches || matchMedia('(display-mode: window-controls-overlay)').matches || navigator.standalone;
+const ua = navigator.userAgent, isIOS = /iphone|ipad|ipod/i.test(ua) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1), isAndroid = /android/i.test(ua);
+let apkOk = false;
+const dock = $('#dock');
+function dockRefresh() {
+  if (standalone) return dock.classList.remove('show');
+  dock.classList.add('show');
+  $('#optInstall').hidden = !deferred; $('#optApk').hidden = !apkOk;
+  $('#optInstallS').textContent = isAndroid ? 'Installs as a real Android app' : 'Pin it to your taskbar or dock';
+  const note = $('#dockNote'); note.hidden = !!deferred && !isIOS;
+  if (isIOS) note.textContent = 'On iPhone/iPad: tap Share, then “Add to Home Screen”.';
+  else if (!deferred) note.textContent = isAndroid ? 'Open the browser menu (⋮) and tap “Install app”. If you do not see it, open this page in Chrome.' : 'In Chrome or Edge, use the install icon in the address bar, or the browser menu → “Install Project Store”.';
+  if (isIOS) $('#optInstall').hidden = true;
+}
+window.addEventListener('beforeinstallprompt', (e) => { e.preventDefault(); deferred = e; dockRefresh(); });
+window.addEventListener('appinstalled', () => { deferred = null; dock.classList.remove('show'); toast('Installed. Open it from your home screen or taskbar.'); });
+$('#optInstall').addEventListener('click', async () => {
+  if (!deferred) return; deferred.prompt(); const r = await deferred.userChoice; deferred = null; if (r.outcome === 'accepted') dock.classList.remove('open'); dockRefresh();
+});
+$('#fab').addEventListener('click', () => { dock.classList.toggle('open'); $('#fab').classList.remove('pulse'); });
+$('[data-dock-close]').addEventListener('click', () => { dock.classList.remove('open'); try { localStorage.setItem('pstore.dockSeen', Date.now()); } catch {} });
+fetch('app.apk', { method: 'HEAD', cache: 'no-store' }).then((r) => { apkOk = r.ok && !/text\/html/.test(r.headers.get('content-type') || ''); dockRefresh(); }).catch(() => {});
+dockRefresh();
+setTimeout(() => { // pop the menu once in a while on first visits
+  let seen = 0; try { seen = +localStorage.getItem('pstore.dockSeen') || 0; } catch {}
+  if (!standalone && Date.now() - seen > 3 * 864e5 && !$('.scrim.open')) { dock.classList.add('open'); try { localStorage.setItem('pstore.dockSeen', Date.now()); } catch {} }
+}, 1800);
+
+/* ---------- misc ---------- */
+let tt; function toast(m) { const t = $('#toast'); t.textContent = m; t.classList.add('on'); clearTimeout(tt); tt = setTimeout(() => t.classList.remove('on'), 2600); }
+function tick() { const d = new Date(); $('#dt').textContent = d.toLocaleDateString(undefined, { weekday: 'short', day: 'numeric', month: 'short' }) + ' · ' + d.toLocaleTimeString(undefined, { hour: 'numeric', minute: '2-digit' }); }
+setInterval(tick, 20000);
+
+if ('serviceWorker' in navigator && location.protocol.startsWith('http')) window.addEventListener('load', () => navigator.serviceWorker.register('sw.js').catch(() => {}));
+
+/* ---------- boot ---------- */
+load(); applyTheme(); tick(); render();
+const qs = new URLSearchParams(location.search);
+const shared = qs.get('url') || qs.get('text');
+if (shared) { const u = normUrl((shared.match(/https?:\/\/\S+/) || [shared])[0]); if (u) { openAdd(); $('#fUrl').value = u; $('#fUrl').dispatchEvent(new Event('input')); } history.replaceState(null, '', location.pathname); }
+else if (qs.get('add') === '1') { openAdd(); history.replaceState(null, '', location.pathname); }
+})();
+</script>
+</body>
+</html>
